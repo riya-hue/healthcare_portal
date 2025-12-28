@@ -1,10 +1,18 @@
 from fastapi import FastAPI
 from pydantic import BaseModel
+from fastapi.middleware.cors import CORSMiddleware
 import numpy as np
 from sklearn.ensemble import RandomForestClassifier
 
 app = FastAPI(title="Heart Disease Prediction API")
 
+app.add_middleware(
+    CORSMiddleware,
+    allow_origins=["*"],  
+    allow_credentials=True,
+    allow_methods=["*"],
+    allow_headers=["*"],
+)
 
 X = np.array([
     [63,1,3,145,233,1,0,150,0,2.3,0,0,1],
@@ -46,13 +54,16 @@ y = np.array([
 ])  # 1 = Heart Disease, 0 = No Disease
 
 
-
 model = RandomForestClassifier(
     n_estimators=40,
     max_depth=6,
     random_state=42
 )
 model.fit(X, y)
+
+# -------------------------------------------------
+# Request Body
+# -------------------------------------------------
 
 class HeartData(BaseModel):
     age: float
@@ -89,3 +100,4 @@ def analyze_heart(data: HeartData):
         "heart_disease": "Yes" if prediction == 1 else "No",
         "risk_probability": round(probability * 100, 2)
     }
+
