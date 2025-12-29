@@ -1,7 +1,7 @@
 console.log("EL Care loaded");
 
-// IMPORTANT: after deployment, replace with your Vercel backend URL
-const BACKEND_URL = "https://healthcare-portal.vercel.app";
+// SAME FastAPI backend (Railway / Local)
+const BACKEND_URL = "";
 
 // Convert form data to JSON
 function toJSON(form) {
@@ -13,10 +13,10 @@ function toJSON(form) {
 // Submit form data to backend
 async function submitForm(form) {
   const resultContainer = document.getElementById("result");
-  resultContainer.innerHTML = "⏳ Analyzing...";
+  resultContainer.textContent = "⏳ Analyzing...";
 
   try {
-    const res = await fetch(`${BACKEND_URL}/analyze_heart`, {
+    const res = await fetch("/analyze_heart", {
       method: "POST",
       headers: { "Content-Type": "application/json" },
       body: JSON.stringify(toJSON(form)),
@@ -34,16 +34,19 @@ async function submitForm(form) {
     `;
   } catch (err) {
     console.error(err);
-    resultContainer.innerHTML = "❌ Backend error. Please try again later.";
+    resultContainer.textContent = "❌ Backend error. Please try again later.";
   }
 }
 
-// Attach submit event to the form
-const heartForm = document.getElementById("heartForm");
-if (heartForm) {
-  heartForm.onsubmit = (e) => {
-    e.preventDefault();
-    submitForm(e.target);
-  };
-}
+// Attach submit event
+document.addEventListener("DOMContentLoaded", () => {
+  const heartForm = document.getElementById("heartForm");
+  if (heartForm) {
+    heartForm.addEventListener("submit", (e) => {
+      e.preventDefault();
+      submitForm(e.target);
+    });
+  }
+});
+
 
