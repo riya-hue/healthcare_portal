@@ -2,10 +2,11 @@ from fastapi import FastAPI
 from pydantic import BaseModel
 from fastapi.middleware.cors import CORSMiddleware
 import numpy as np
+from fastapi.staticfiles import StaticFiles
 from sklearn.ensemble import RandomForestClassifier
 
 app = FastAPI(title="Heart Disease Prediction API")
-
+app.mount("/static", StaticFiles(directory="static"), name="static")
 app.add_middleware(
     CORSMiddleware,
     allow_origins=["*"],  
